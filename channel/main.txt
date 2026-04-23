@@ -1,0 +1,7 @@
+Huffman bits (....)
+→ split into 4-bit blocks
+→ encode to 7-bit (Hamming)
+→ send through noisy channel
+→ errors may occur
+→ decode & correct
+→ recover original bits

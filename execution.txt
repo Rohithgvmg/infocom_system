@@ -1,0 +1,18 @@
+Read Input
+→ Convert to frequency map
+→ Huffman Encode → Bitstream
+→ Apply Channel Coding
+→ Pass through BSC (noise)
+→ Channel Decode
+→ Huffman Decode
+→ Compare with original
+→ Compute BER, accuracy
+
+| Case | Coding            |
+| ---- | ----------------- |
+| 1    | No channel coding |
+| 2    | Hamming           |
+| 3    | Repetition        |
+
+double[] noiseLevels = {0.01, 0.05, 0.1, 0.2};
+
