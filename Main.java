@@ -35,13 +35,13 @@ public class Main {
         double[] noiseLevels = {0.01, 0.05, 0.1, 0.2};
 
         for (double noise : noiseLevels) {
-            runComparison(encoded, root, noise,dims);
+            runComparison(encoded, root, noise,dims,compression);
         }
         
     }
 
     // 🔥 Main comparison function
-    private static void runComparison(String encoded, Node root, double noise,int[] dims) {
+    private static void runComparison(String encoded, Node root, double noise,int[] dims,double compression) {
 
         System.out.println("\n==============================");
         System.out.println("Noise Level: " + noise);
@@ -56,7 +56,7 @@ public class Main {
         // Case 3: Repetition
         Result repetition = simulateRepetition(encoded, root, noise,dims);
 
-        printComparisonTable(noise, noCoding, hamming, repetition);
+        printComparisonTable(noise, noCoding, hamming, repetition,compression);
     }
 
     // ✅ No Coding
@@ -79,8 +79,9 @@ public class Main {
 
         double ber = Metrics.calculateBER(encoded, noisy);
         double rate = Metrics.codeRate("NOCODING");
+        double acc = Metrics.accuracy(encoded, noisy);
 
-        return new Result(output, ber,rate);
+        return new Result(output, ber,rate,acc);
     }
 
     // ✅ Hamming
@@ -108,8 +109,8 @@ public class Main {
 
         double ber = Metrics.calculateBER(encoded, decodedHamming);
         double rate = Metrics.codeRate("HAMMING");
-
-        return new Result(output, ber,rate);
+        double acc = Metrics.accuracy(encoded, decodedHamming);
+        return new Result(output, ber,rate,acc);
     }
 
     // ✅ Repetition
@@ -137,38 +138,45 @@ public class Main {
 
         double ber = Metrics.calculateBER(encoded, decodedRep);
         double rate = Metrics.codeRate("REPETITION");
-         
+         double acc = Metrics.accuracy(encoded, decodedRep);
         
-        return new Result(output, ber,rate);
+        return new Result(output, ber,rate,acc);
     }
 
-    private static void printComparisonTable(double noise, Result no, Result ham, Result rep) {
+    private static void printComparisonTable(double noise, Result no, Result ham, Result rep, double compression) {
 
+    System.out.println("\n================ PERFORMANCE METRICS ================");
+    System.out.println("Noise Level: " + noise + "\n");
 
-    System.out.printf("%-15s %-10s %-12s %-10s\n", 
-                      "Technique", "BER", "Code Rate", "Output Length");
+    System.out.printf("%-15s %-10s %-12s %-10s %-12s\n",
+            "Technique", "BER", "Code Rate", "Accuracy", "Compression");
 
     System.out.println("-------------------------------------------------------------");
 
-    System.out.printf("%-15s %-10.5f %-12.2f %-10s\n", 
-                      "No Coding", no.ber, no.codeRate, no.output.length());
+    System.out.printf("%-15s %-10.5f %-12.2f %-10.2f %-12.2f\n",
+            "No Coding", no.ber, no.codeRate, no.accuracy, compression);
 
-    System.out.printf("%-15s %-10.5f %-12.2f %-10s\n", 
-                      "Hamming", ham.ber, ham.codeRate, ham.output.length());
+    System.out.printf("%-15s %-10.5f %-12.2f %-10.2f %-12.2f\n",
+            "Hamming", ham.ber, ham.codeRate, ham.accuracy, compression);
 
-    System.out.printf("%-15s %-10.5f %-12.2f %-10s\n", 
-                      "Repetition", rep.ber, rep.codeRate, rep.output.length());
+    System.out.printf("%-15s %-10.5f %-12.2f %-10.2f %-12.2f\n",
+            "Repetition", rep.ber, rep.codeRate, rep.accuracy, compression);
+
+    System.out.println("====================================================");
 }
 
     static class Result {
     String output;
     double ber;
     double codeRate;
+    double accuracy;
 
-    Result(String output, double ber, double codeRate) {
+    Result(String output, double ber, double codeRate, double accuracy) {
         this.output = output;
         this.ber = ber;
         this.codeRate = codeRate;
+        this.accuracy = accuracy;
     }
 }
 }
+
